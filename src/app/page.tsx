@@ -44,7 +44,7 @@ export default function Home() {
                 onClick={handleDislike}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg transform transition-transform duration-200 hover:scale-110 active:scale-90"
             >
-                Enginin AMK
+                Engin&apos;in AMK
             </button>
         </div>
     );
