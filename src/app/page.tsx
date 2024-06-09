@@ -6,6 +6,7 @@ export default function Home() {
     const [dislikeCount, setDislikeCount] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const [fontSize, setFontSize] = useState<string>("75px");
 
     useEffect(() => {
         const unsubscribe = onSnapshot(doc(db, "counts", "dislike"), (doc) => {
@@ -19,22 +20,12 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.code === "Space") {
-                event.preventDefault(); // Prevent the default space scroll behavior
-                buttonRef.current?.click();
-                buttonRef.current?.classList.add("active");
-                setTimeout(() => {
-                    buttonRef.current?.classList.remove("active");
-                }, 200);
-            }
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, []);
+        if (dislikeCount !== null) {
+            const numDigits = dislikeCount.toString().length;
+            const newSize = 75 / numDigits;
+            setFontSize(`${newSize}px`);
+        }
+    }, [dislikeCount]);
 
     const handleDislike = async () => {
         const docRef = doc(db, "counts", "dislike");
@@ -56,7 +47,12 @@ export default function Home() {
             )}
             <h1 className="text-3xl font-bold mb-4">Engin&apos;in AMK</h1>
             <p className={`text-2xl mb-4 text-center`}>
-                <span className={`text-red-500 font-bold`}>{dislikeCount}</span> kez Engin&apos;e sövüldü. Sen de sövmek istiyorsan:
+                <div className="inline-block border-4 rounded-lg transform transition-transform duration-200 hover:scale-110 px-[0.5]">
+                <span 
+                    className={`text-red-500 font-bold text-center inline-block text-3xl`}
+                    style={{ width: `${dislikeCount?.toString().length}ch` }}>
+                        {dislikeCount}
+                </span></div> kez Engin&apos;e sövüldü. Sen de sövmek istiyorsan:
             </p>
             <button
                 ref={buttonRef}
