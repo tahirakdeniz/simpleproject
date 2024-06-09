@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { db, doc, getDoc, setDoc, onSnapshot } from "../../firebase";
+import { db, doc, getDoc, setDoc, onSnapshot, runTransaction, increment, updateDoc} from "../../firebase";
 
 export default function Home() {
     const [dislikeCount, setDislikeCount] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         const unsubscribe = onSnapshot(doc(db, "counts", "dislike"), (doc) => {
@@ -17,14 +18,31 @@ export default function Home() {
         return () => unsubscribe();
     }, []);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.code === "Space") {
+                event.preventDefault(); // Prevent the default space scroll behavior
+                buttonRef.current?.click();
+                buttonRef.current?.classList.add("active");
+                setTimeout(() => {
+                    buttonRef.current?.classList.remove("active");
+                }, 200);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
+
     const handleDislike = async () => {
         const docRef = doc(db, "counts", "dislike");
-        const docSnap = await getDoc(docRef);
-        console.log("dislike");
-        if (docSnap.exists()) {
-            await setDoc(docRef, { count: docSnap.data().count + 1 });
-        } else {
-            await setDoc(docRef, { count: 1 });
+
+        try {
+            await updateDoc(docRef, { count: increment(1) });
+        } catch (e) {
+            console.error("Update failed: ", e);
         }
     };
 
@@ -41,6 +59,7 @@ export default function Home() {
                 <span className={`text-red-500 font-bold`}>{dislikeCount}</span> kez Engin&apos;e sövüldü. Sen de sövmek istiyorsan:
             </p>
             <button
+                ref={buttonRef}
                 onClick={handleDislike}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg transform transition-transform duration-200 hover:scale-110 active:scale-90"
             >

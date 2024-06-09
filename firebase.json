@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "engininamk",
     "source": ".",
     "ignore": [
       "firebase.json",
