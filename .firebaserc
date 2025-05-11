@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "ecommercewebsite-81922"
-  }
+  },
+  "targets": {
+    "ecommercewebsite-81922": {
+      "hosting": {
+        "prod": [
+          "engininamk"
+        ],
+        "preprod": [
+          "ecommercewebsite-81922"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

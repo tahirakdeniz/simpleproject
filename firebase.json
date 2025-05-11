@@ -1,14 +1,14 @@
 {
-  "hosting": {
-    "site": "engininamk",
-    "source": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "frameworksBackend": {
-      "region": "europe-west1"
+  "hosting": [
+    {
+      "target": "prod",
+      "public": "public",
+      "ignore": [ "firebase.json", "**/.*", "**/node_modules/**" ]
+    },
+    {
+      "target": "preprod",
+      "public": "out",
+      "ignore": [ "firebase.json", "**/.*", "**/node_modules/**" ]
     }
-  }
+  ]
 }
